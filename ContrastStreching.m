@@ -1,0 +1,55 @@
+clear all;
+clear all;
+clc
+
+%membaca citra original
+image=imread('foto.jpg');
+%convert citra original ke dalam citra keabuan
+image=rgb2gray(image);
+
+%membaca array citra dalam format Double
+S=double(image);
+
+%menentukan ukuran citra dalam matriks
+[Jbaris Jkolom]=size(S);
+
+disp('');
+disp('*****Contrast Streching*****');
+
+%input titik (r1,s1) dan (r2,s2) untuk membentuk fungsi transformasi
+r1=input('masukkan nilai r1 : ');
+s1=input('masukkan nilai s1 : ');
+r2=input('masukkan nilai r2 : ');
+s2=input('masukkan nilai s2 : ');
+
+%citra grayscale 8 bit
+L=(2)^8;
+Lmaks=(L-1);
+
+%program melakukan iterasi sesuai ukuran baris dan kolom citra
+for I=1:Jbaris
+    for J=1:Jkolom
+        Ibaru=S(I,J);   %mendefinisikan citra baru
+        if(Ibaru<r1)    %nilai intensitas lebih kecil dari r1
+            Ibaru=(round((s1/r1)*Ibaru));
+        elseif(Ibaru<=r2)   %nilai intensitas antara r1 dan r2
+            Ibaru=(s1+round((Ibaru-r1)*(s2-s1)/(r2-r1)));
+        else    %pada nilai (Ibaru>=r2) dan (Ibaru<=Lmaks)
+            Ibaru=(s2+round((Ibaru-r2)*(Lmaks-s2)/(Lmaks-r2)));            
+        end
+        %mengisi nilai intensitas baru pada citra pada titik (I,J)
+        S(I,J)=Ibaru;
+    end
+end
+
+imagecontrast=uint8(S);
+
+disp('');
+disp('**************** Kelompok 8 ****************');
+
+%menampilkan citra awal
+subplot(2,2,1);imshow(image);title('Citra Abu');
+subplot(2,2,2);imhist(image);title('Histogram Citra Abu');
+%menampilkan citra setelah contrast streching
+subplot(2,2,3);imshow(imagecontrast);title('Citra Hasil Contrast Streching');
+subplot(2,2,4);imhist(imagecontrast);title('Histogram Citra Hasil Contrast Streching');
